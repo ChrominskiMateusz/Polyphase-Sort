@@ -1,0 +1,7 @@
+# Directories
+.vs/
+bin/
+Sort/data/
+
+# Files
+*.user

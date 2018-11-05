@@ -135,13 +135,13 @@ void Logic<T>::sort (void)			// sort data
 template<typename T>
 void Logic<T>::printFiles (void)
 {
-	std::cout << "\nPIERWSZY PLIK:\n";
+	std::cout << "\nFirst File:\n";
 	physical->printData (1);
 	
-	std::cout << "\nDRGI PLIK:\n";
+	std::cout << "\nSecond File:\n";
 	physical->printData (2);
 
-	std::cout << "\nTRZECI PLIK:\n";
+	std::cout << "\nThird File:\n";
 	physical->printData (3);
 }
 

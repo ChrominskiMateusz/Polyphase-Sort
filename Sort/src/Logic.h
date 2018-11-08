@@ -90,7 +90,7 @@ void Logic<T>::merge (void)			// merging: 2S -> 1S
 	prev = {};
 	prevS = {};
 
-	while (!isEnd && !isEndS)
+	while (!isEnd && !isEndS)			// while end of one of series
 	{
 		checkGet (firstLine, isEnd, prev);
 		checkGet (secondLine, isEndS, prevS);
@@ -104,7 +104,7 @@ void Logic<T>::merge (void)			// merging: 2S -> 1S
 		checkSave (thirdLine);
 	}
 
-	if (isEnd && !isEndS)
+	if (isEnd && !isEndS)						// move the rest of records
 	{
 		moveS (secondLine, thirdLine);
 		isEndS = true;
@@ -122,7 +122,7 @@ void Logic<T>::sort (void)			// sort data
 	firstStepSort ();
 	while (seriesAmount[firstLine - 1] + seriesAmount[secondLine - 1] + seriesAmount[thirdLine - 1] != 1)
 	{
-		while (seriesAmount[secondLine - 1] != 0)
+		while (seriesAmount[secondLine - 1] != 0)			// one phase of sorting
 		{
 			merge ();
 			seriesAmount[firstLine - 1]--;
@@ -160,7 +160,7 @@ void Logic<T>::checkBonded (const int& sourceIndex, int& count)
 		T nextRecord = physical->buffers[sourceIndex][bPointer[sourceIndex]];
 
 		T lastRecord;
-		if (physical->recordsAmount[lineNO] == 0)
+		if (physical->recordsAmount[lineNO] == 0)		// if buffer is empty
 		{
 			physical->files[lineNO].clear ();
 			physical->files[lineNO].seekg (physical->getLength (lineNO) - sizeof (T));
@@ -184,7 +184,7 @@ void Logic<T>::placeS (const int& sourceIndex, int& count)		// place S on line
 	moveS (sourceIndex, lineNO);
 	seriesAmount[lineNO - 1]++;
 	count--;
-	if (!count)
+	if (!count)											// Fibonacci
 	{
 		count = seriesAmount[lineNO - 1];
 		switchLine ();
@@ -213,6 +213,7 @@ void Logic<T>::afterMergeCleaning (void)
 	physical->files[thirdLine].seekg (0);
 	setLines ();
 	physical->recordsAmount[thirdLine] = 0;
+
 	if (doPrint)
 		printFiles ();
 }
@@ -247,13 +248,13 @@ void Logic<T>::firstStepSort (void)			// distribute and clean dummies
 	distributeV2 (FileIO<T>::dataFile);
 	physical->saveRecords (FileIO<T>::firstBuffer);
 	physical->saveRecords (FileIO<T>::secondBuffer);
-	std::cout << "1.45 * log2(s) = " << 1.45 * log2 (seriesAmount[0] + seriesAmount[1]) << std::endl;
+	std::cout << seriesAmount[0] + seriesAmount[1] << std::endl;
 
-	resetG ();
+	resetG ();				// clean after distribute
 	setLines ();
 	clearBPointers ();
 
-	for (int i{ dummy[lineNO - 1] }; i > 0; i--)
+	for (int i{ dummy[lineNO - 1] }; i > 0; i--)	// move as many series as dummies
 	{
 		moveS (secondLine, thirdLine);
 		seriesAmount[secondLine - 1]--;
@@ -353,6 +354,7 @@ template<typename T>
 void Logic<T>::saveRecord (const int& sourceIndex, const T& record)
 {
 	physical->buffers[sourceIndex][physical->recordsAmount[sourceIndex]++] = record;
+	checkSave (sourceIndex);
 }
 
 template<typename T>
@@ -372,7 +374,6 @@ template<typename T>
 void Logic<T>::moveRecord (const int& fromIndex, const int& toIndex, bool& isEnd, T& prevR)
 {
 	saveRecord (toIndex, getRecord (fromIndex));
-	checkSave (toIndex);
 	checkEnd (fromIndex, isEnd, prevR);
 }
 

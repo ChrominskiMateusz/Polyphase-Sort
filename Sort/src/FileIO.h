@@ -12,9 +12,9 @@ public:
 	FileIO (const std::string& fileName, int amount, const bool& doRandom);
 	void printData (const int& fileIndex);
 	void init (const std::string& fileName);
-	void saveRecords (const int& bufferIndex);
+	void saveRecords (const int& bufferIndex);		// save buffer
 	const int getLength (const int& sourceIndex);
-	void getRecords (const int& bufferIndex, int& bPointer);
+	void getRecords (const int& bufferIndex, int& bPointer);	// fill buffer w/ records
 	void createData (const std::string& fileName, int amount, const bool& doRandom);
 	~FileIO (void);
 	int operations;

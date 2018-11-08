@@ -27,11 +27,13 @@ private:
 	void afterMergeCleaning (void);
 	void checkSave (const int& index);
 	void clearFile (const int& index);
+	T getRecord (const int& sourceIndex);
 	void initiateVar (const int& sourceIndex);
 	void distributeV2 (const int& sourceIndex);
 	void placeS (const int& sourceIndex, int& count);
 	void checkBonded (const int& sourceIndex, int& count);
 	void moveS (const int& fromIndex, const int& toIndex);
+	void saveRecord (const int& sourceIndex, const T& record);
 	void checkGet (const int& souceIndex, bool& isEnd, T& prevR);
 	void checkEnd (const int& souceIndex, bool& isEnd, T& prevR);
 	void moveRecord (const int& fromIndex, const int& toIndex, bool& isEnd, T& prevR);
@@ -342,6 +344,18 @@ void Logic<T>::clearFile (const int& index)
 }
 
 template<typename T>
+T Logic<T>::getRecord (const int& sourceIndex)
+{
+	return physical->buffers[sourceIndex][bPointer[sourceIndex]++];
+}
+
+template<typename T>
+void Logic<T>::saveRecord (const int& sourceIndex, const T& record)
+{
+	physical->buffers[sourceIndex][physical->recordsAmount[sourceIndex]++] = record;
+}
+
+template<typename T>
 void Logic<T>::checkEnd (const int& sourceIndex, bool& isEnd, T& prevR)
 {
 	if (bPointer[sourceIndex] == FileIO<T>::BUFFER_CAPACITY)
@@ -357,9 +371,7 @@ void Logic<T>::checkEnd (const int& sourceIndex, bool& isEnd, T& prevR)
 template<typename T>
 void Logic<T>::moveRecord (const int& fromIndex, const int& toIndex, bool& isEnd, T& prevR)
 {
-	physical->buffers[toIndex][physical->recordsAmount[toIndex]] = physical->buffers[fromIndex][bPointer[fromIndex]];
-	bPointer[fromIndex]++;
-	physical->recordsAmount[toIndex]++;
+	saveRecord (toIndex, getRecord (fromIndex));
 	checkSave (toIndex);
 	checkEnd (fromIndex, isEnd, prevR);
 }

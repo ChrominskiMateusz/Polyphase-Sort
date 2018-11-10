@@ -83,14 +83,14 @@ void Logic<T>::distributeV2 (const int& sourceIndex)		// distribiute records on 
 }
 
 template<typename T>
-void Logic<T>::merge (void)			// merging: 2S -> 1S
+void Logic<T>::merge (void)									// merging: 2S -> 1S
 {
 	bool isEnd = false;
 	bool isEndS = false;
 	prev = {};
 	prevS = {};
 
-	while (!isEnd && !isEndS)			// while end of one of series
+	while (!isEnd && !isEndS)								// while end of one of series
 	{
 		checkGet (firstLine, isEnd, prev);
 		checkGet (secondLine, isEndS, prevS);
@@ -104,7 +104,7 @@ void Logic<T>::merge (void)			// merging: 2S -> 1S
 		checkSave (thirdLine);
 	}
 
-	if (isEnd && !isEndS)						// move the rest of records
+	if (isEnd && !isEndS)									// move the rest of records
 	{
 		moveS (secondLine, thirdLine);
 		isEndS = true;
@@ -117,7 +117,7 @@ void Logic<T>::merge (void)			// merging: 2S -> 1S
 }
 
 template<typename T>
-void Logic<T>::sort (void)			// sort data
+void Logic<T>::sort (void)									// sort data
 {
 	firstStepSort ();
 	while (seriesAmount[firstLine - 1] + seriesAmount[secondLine - 1] + seriesAmount[thirdLine - 1] != 1)
@@ -184,7 +184,7 @@ void Logic<T>::placeS (const int& sourceIndex, int& count)		// place S on line
 	moveS (sourceIndex, lineNO);
 	seriesAmount[lineNO - 1]++;
 	count--;
-	if (!count)											// Fibonacci
+	if (!count)													// Fibonacci
 	{
 		count = seriesAmount[lineNO - 1];
 		switchLine ();
@@ -243,14 +243,14 @@ void Logic<T>::printBuffers (void)
 }
 
 template<typename T>
-void Logic<T>::firstStepSort (void)			// distribute and clean dummies
+void Logic<T>::firstStepSort (void)					// distribute and clean dummies
 {
 	distributeV2 (FileIO<T>::dataFile);
 	physical->saveRecords (FileIO<T>::firstBuffer);
 	physical->saveRecords (FileIO<T>::secondBuffer);
 	std::cout << seriesAmount[0] + seriesAmount[1] << std::endl;
 
-	resetG ();				// clean after distribute
+	resetG ();										// clean after distribute
 	setLines ();
 	clearBPointers ();
 
